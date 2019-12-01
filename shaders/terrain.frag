@@ -34,10 +34,13 @@ void main() {
 		spec = specular * pow(intSpec,shininess);
 	}
 
-	if(DataIn.elevation > 0){
+	if(DataIn.elevation*15 == 0){
+		colorOut = max(intensity *  diffuse + spec, diffuse * 0.25) + vec4(0,0,25,0);
+	}
+	else if(0<DataIn.elevation*15 && (DataIn.elevation*15)<0.95){
 		colorOut = max(intensity *  diffuse + spec, diffuse * 0.25) + vec4(0,20,0,0);
 	}
-	else{
-		colorOut = max(intensity *  diffuse + spec, diffuse * 0.25);
+	else if(DataIn.elevation*15 > 0.95){
+		colorOut = max(intensity *  diffuse + spec, diffuse * 0.25) + vec4(255,255,255,0);
 	}
 }

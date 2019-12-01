@@ -143,10 +143,10 @@ float fbm(vec3 vertex){
 
   for(int i=0; i < octaves; i++){
     v = snoise(vertex * frequency); 
-    total = total + (v * amplitude);
+    total += (v + 1) * 0.5 * amplitude;
 
-    frequency = frequency * roughness;
-    amplitude = amplitude * persistence;
+    frequency *= roughness;
+    amplitude *= persistence;
   }
   
   total = max(0,(total - minValue));
@@ -155,10 +155,12 @@ float fbm(vec3 vertex){
 }
 
 void main(){   
+    vec4 new_position = position;
+
 	  // Height Map Calculation
     float elevation = fbm(vec3(position));
-
-    vec4 new_position = vec4(position.x + normal.x * elevation ,position.y + normal.y * elevation,position.z + normal.z * elevation,1);
+    
+    new_position.xyz = position.xyz + (normal * elevation);
 
     DataOut.normal = normalize(m_normal * normal);
 	  DataOut.eye = -(m_viewModel * position);
