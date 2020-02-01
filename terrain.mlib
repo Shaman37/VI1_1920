@@ -15,8 +15,8 @@
 	</shaders>
 
 	<states>
-		<state name="cullFront">
-			<CULL_TYPE value="FRONT" />
+		<state name="cullBack">
+			<CULL_TYPE value="BACK" />
 		</state>
 	</states>
 	
@@ -78,6 +78,13 @@
 					<valueof uniform="noise_z" 
 							 type="RENDERER" context="CURRENT" 
 							 component="noise_z" />
+					
+					<valueof uniform="simple_noise" 
+							 type="RENDERER" context="CURRENT" 
+							 component="simple_noise" />
+					<valueof uniform="ridgid_noise" 
+							 type="RENDERER" context="CURRENT" 
+							 component="ridgid_noise" />
 				
 					<valueof uniform="water"
 							 type="TEXTURE_BINDING" context="CURRENT"
@@ -107,6 +114,7 @@
 				<texture name="mountain" UNIT = 4 />
 				<texture name="snow" UNIT = 5 />
 			</textures>
+			<state name="cullBack" />
 		</material>
 	</materials>
     

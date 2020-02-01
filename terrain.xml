@@ -1,4 +1,4 @@
-<project name="Simple" width="1024" height="512">
+<project name="Simple" width="1024" height="1024">
     <assets>
         <attributes>
             <attribute type="RENDERER" name="roughness" data="FLOAT" value="2.000" />
@@ -10,11 +10,13 @@
             <attribute type="RENDERER" name="noise_x" data="FLOAT" value="0.00"/>
             <attribute type="RENDERER" name="noise_y" data="FLOAT" value="0.00"/>
             <attribute type="RENDERER" name="noise_z" data="FLOAT" value="0.00"/>
+            <attribute type="RENDERER" name="simple_noise" data="INT" value="0"/>
+            <attribute type="RENDERER" name="ridgid_noise" data="INT" value="0"/>
         </attributes>
         <scenes>
 			<scene name="Terrain" type="Scene" param="UNITIZE SWAP_YZ">	
-                <SCALE x=25 y=25 z=25 />
-                    <geometry name = "Sphere" type = "SPHERE" SLICES=516 STACKS=516 material="terrain">
+                <SCALE x=5 y=5 z=5 />
+                    <geometry name = "Sphere" type = "SPHERE" SLICES=256 STACKS=256 material="terrain">
                     </geometry>       
 				
                 <!--<geometry name = "Grid" type = "GRID" material="terrain" 
@@ -24,16 +26,17 @@
 		</scenes>
          
         <viewports>
-            <viewport name="MainViewport">
-                <CLEAR_COLOR r="0" g="0" b="0" />
-            </viewport>
+           <viewport name="MainViewport" >
+				<ORIGIN x = 0 y = 0 />
+				<CLEAR_COLOR r="0.0" g="0.0" b="0.0" />
+			</viewport>
         </viewports>
          
         <cameras>
 			<camera name="MainCamera" >
 				<viewport name="MainViewport" />
-				<FOV value="60.0" />
-				<NEAR value="1" FAR="10.0" />
+				<FOV value="30.0" />
+				<NEAR value="0.5" FAR="15.0" />
 				<POSITION x="0" y="10.0" z="30" />
 				<VIEW x="0.0" y="-0.0" z="-1" />
 				<UP x="0" y="1" z="0" />
@@ -53,7 +56,7 @@
     </assets>
      
     <pipelines>
-        <pipeline name="my pipeline" default="true">
+        <pipeline name="my pipeline">
             <pass class="default" name="pass1">
                 <scenes>
                     <scene name="Terrain" />
@@ -67,6 +70,7 @@
 				</materialMaps>
             </pass>
         </pipeline>
+        
     </pipelines>
     <interface> 
 		<window label="Terrain - Noise Params"> 
@@ -94,6 +98,11 @@
 				component="noise_y" def="step=0.001"/>
             <var label="noise_z" type="RENDERER" context="CURRENT"
 				component="noise_z" def="step=0.001"/>
+            
+            <var label="simple_noise" type="RENDERER" context="CURRENT"
+				component="simple_noise" def="min=0 max=1 step=1"/>
+            <var label="ridgid_noise" type="RENDERER" context="CURRENT"
+				component="ridgid_noise" def="min=0 max=1 step=1"/>
 		</window>
 	</interface>  
 </project>
