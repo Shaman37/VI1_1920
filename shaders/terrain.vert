@@ -105,34 +105,14 @@ float snoise(vec3 v)
   }
 
 
+/*
+
+*/
 uniform	mat4 m_pvm;
 uniform	mat4 m_viewModel;
 uniform	mat4 m_view;
 uniform	mat3 m_normal;
 uniform	vec4 l_dir;	   // global space
-
-/*
- - Noise Specifications -
-
-Octaves -
-Strength -
-Base Roughness -
-Roughness -
-Persistence -
-Min Value - 
-
-*/
-uniform int octaves;
-uniform float strength;
-uniform float base_roughness;
-uniform float roughness;
-uniform float persistence;
-uniform float minValue; 
-
-// Noise Centre Coordinates - Allows us to shift the noise along our object
-uniform float noise_x;
-uniform float noise_y;
-uniform float noise_z;
 
 in vec4 position;	// local space
 in vec3 normal;		// local space
@@ -146,22 +126,48 @@ out Data{
 	  vec2 texCoord;
 } DataOut;
 
+/*
+ - Noise Specifications -
+
+Octaves -
+Strength -
+Base Roughness -
+Roughness -
+Persistence -
+Min Value - 
+
+*/
+
+// Simple Noise Settings
+uniform int octaves;
+uniform float strength;
+uniform float base_roughness;
+uniform float roughness;
+uniform float persistence;
+uniform float minValue; 
+
+// Noise Centre Coordinates - Allows us to shift the noise along our model
+uniform float noise_x;
+uniform float noise_y;
+uniform float noise_z;
+
+// Noise Mask Flahs
+uniform int simple_noise;
+
 /* 
 ---------------------------
 - Fractal Brownian Motion -
 ---------------------------
 */
 
-float fbm(vec3 vertex){  
+float simpleNoise_Filter(vec3 vertex){  
 	float total = 0;
-  float v = 0;
   float frequency = base_roughness;
   float amplitude = 1;
   vec3 noise_centre = vec3(noise_x,noise_y,noise_z);
 
   for(int i=0; i < octaves; i++){
-    v = snoise(vertex * frequency + noise_centre); 
-    total += v * amplitude;
+    total += (snoise(vertex * frequency + noise_centre) + 1) * 0.5 * amplitude; 
 
     frequency *= roughness;
     amplitude *= persistence;
@@ -172,19 +178,38 @@ float fbm(vec3 vertex){
 	return total * strength;
 }
 
-void main(){   
+// float ridgidNoise_Filter(vec3 vertex){  
+// 	float total = 0;
+//   float frequency = base_roughness;
+//   float amplitude = 1;
+//   vec3 noise_centre = vec3(noise_x,noise_y,noise_z);
+
+//   for(int i=0; i < octaves; i++){
+//     total += amplitude * snoise(vertex * frequency + noise_centre); 
+
+//     frequency *= roughness;
+//     amplitude *= persistence;
+//   }
+  
+//   total = max(0,(total - minValue));
+	
+// 	return total * strength;
+// }
+
+void main(){
     vec4 new_position = position;
 
-	  // Elevation Calculation
-    float elevation = fbm(vec3(position));
-    
+	  // Simple Noise Calculation
+    float elevation = simpleNoise_Filter(vec3(position));
+   
     DataOut.normal = normalize(m_normal * normal);
 	  DataOut.eye = -(m_viewModel * position);
 	  DataOut.l_dir = normalize(vec3(m_view * -l_dir));
     
-    new_position.xyz = position.xyz + (normal * elevation)/25;
     DataOut.elevation = elevation;
     DataOut.texCoord = texCoord0;
+
+    new_position.xyz = position.xyz + (normal * elevation)/20;
 
     gl_Position = m_pvm * new_position;
 }

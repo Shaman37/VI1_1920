@@ -5,7 +5,6 @@ uniform sampler2D water,sand,grass,rock,mountain,snow;
 uniform	vec4 diffuse;
 uniform	vec4 specular;
 uniform	float shininess;
-
 uniform float strength;
 uniform float minValue;
 
@@ -53,20 +52,20 @@ void main() {
 		colorOut = max(intensity * colorWater * diffuse + spec, colorWater * diffuse * 0.25);
 	}
 	// Water-Sand Transition
-	else if(DataIn.elevation < 0.02){
+	else if(DataIn.elevation < 0.01){
 		float color;
-		color = smoothstep(0.0,0.02,DataIn.elevation);
+		color = smoothstep(0.0,0.01,DataIn.elevation);
 
 		colorOut = max(intensity * mix(colorWater,colorSand,color) * diffuse + spec, mix(colorWater,colorSand,color) * diffuse * 0.25);
 	}
 	// Sand Texture Application
-	else if(DataIn.elevation < 0.07){
+	else if(DataIn.elevation < 0.02){
 		colorOut = max(intensity * colorSand * diffuse + spec, colorSand * diffuse * 0.25);
 	}
 	// Sand-Grass Transition
-	else if(DataIn.elevation  < 0.15){
+	else if(DataIn.elevation  < 0.03){
 		float color;
-		color = smoothstep(0.07,0.15,DataIn.elevation);
+		color = smoothstep(0.02,0.03,DataIn.elevation);
 
 		colorOut = max(intensity * mix(colorSand,colorGrass,color) * diffuse + spec, mix(colorSand,colorGrass,color) * diffuse * 0.25);
 	}
